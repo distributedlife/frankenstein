@@ -32,29 +32,22 @@ import java.net.*;
 public class AsyncFrankensteinDriver implements FrankensteinDriver {
     protected PlaybackFrankensteinIntegration frankensteinIntegration;
     protected String[] args;
-    protected StringBuilder script;
+    static protected final String unsupported = "This constructor is not supported on this driver. Please use (host, port)" ;
 
     public AsyncFrankensteinDriver(Class mainClass, String[] args) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(mainClass, new HtmlTestReporter());
-        frankensteinIntegration.start(args);
-        startTest("test");
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Class mainClass, String[] args, TestReporter testReporter) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(mainClass, testReporter);
-        frankensteinIntegration.start(args);
-        startTest("test");
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Class mainClass, String[] args, TestReporter testReporter, String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(mainClass, testReporter);
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(PlaybackFrankensteinIntegration frankensteinIntegration, String[] args) {
-        this.frankensteinIntegration = frankensteinIntegration;
-        this.args = args;
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Class mainClass,
@@ -62,9 +55,7 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
                                    TestReporter testReporter,
                                    WorkerThreadMonitor threadMonitor,
                                    String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(mainClass, testReporter, threadMonitor, new DefaultComponentFinder(new DefaultNamingStrategy()), new DefaultWindowContext());
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Class mainClass,
@@ -74,30 +65,22 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
                                    ComponentFinder componentFinder,
                                    WindowContext windowContext,
                                    String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(mainClass, testReporter, threadMonitor, componentFinder, windowContext);
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Application application, String[] args) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(application, new HtmlTestReporter());
-        frankensteinIntegration.start(args);
-        startTest("test");
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Application application, String[] args, TestReporter testReporter) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(application, testReporter);
-        frankensteinIntegration.start(args);
-        startTest("test");
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Application application,
                                    String[] args,
                                    TestReporter testReporter,
                                    String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(application, testReporter);
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Application application,
@@ -105,9 +88,7 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
                                    TestReporter testReporter,
                                    RegexWorkerThreadMonitor threadMonitor,
                                    String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(application, testReporter, threadMonitor, new DefaultComponentFinder(new DefaultNamingStrategy()), new DefaultWindowContext());
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
     public AsyncFrankensteinDriver(Application application,
@@ -117,23 +98,46 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
                                    ComponentFinder componentFinder,
                                    WindowContext windowContext,
                                    String testName) {
-        frankensteinIntegration = new PlaybackFrankensteinIntegration(application, testReporter, threadMonitor, componentFinder, windowContext);
-        frankensteinIntegration.start(args);
-        startTest(testName);
+        throw new UnsupportedOperationException(unsupported);
     }
 
-    protected Socket socket;
+
+    protected Boolean connected = false;
+    protected Socket socket = null;
+    protected Integer maxTries = 30 ;
+    protected StringBuilder script = new StringBuilder();
+
     public AsyncFrankensteinDriver(String host, Integer port) {
+        Integer numTries = 0 ;
+
+        while(!connected) {
+            try {
+                socket = new Socket("127.0.0.1", 5678);
+
+                connected = true;
+            }
+            catch(Exception e) {
+                numTries++ ;
+                if (numTries >= maxTries) {
+                    throw new RuntimeException("Unable to establish connection to frankenstein after " + numTries + " attempts.") ;
+                }
+            }
+
+            waitBeforeTryingToConnectAgain(1000);
+        }
+    }
+
+    private void waitBeforeTryingToConnectAgain(long waitInMs) {
         try {
-            socket = new Socket(host, port);
+            Thread.sleep(waitInMs);
         }
         catch(Exception e) {
-            System.out.println("Unable to establish connection to frankenstein");
+            //Omm nom nom
         }
     }
 
     void setScriptContext(ScriptContext scriptContext) {
-        frankensteinIntegration.setScriptContext(scriptContext);
+//        frankensteinIntegration.setScriptContext(scriptContext);
     }
 
     TestReporter getTestReporter() {
@@ -345,18 +349,23 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
     }
 
     public void finishTest() {
+        appendToScript("END_OF_SCRIPT");
+
+        sendScriptToFrankensteinServer();
+    }
+
+    protected void sendScriptToFrankensteinServer() {
         try {
             BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             buffer.write(script.toString());
             buffer.flush();
         } catch (IOException e) {
-            System.out.println("writing to the buffer failed like a derp!");
+            throw new RuntimeException(e);
         }
     }
 
-
-    private void appendToScript(String toAppend) {
+    protected void appendToScript(String toAppend) {
         script.append(toAppend.replaceAll("\n", "&#xA;") + "\n");
     }
 }

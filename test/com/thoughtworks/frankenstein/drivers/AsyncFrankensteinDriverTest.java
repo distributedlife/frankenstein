@@ -31,59 +31,24 @@ public class AsyncFrankensteinDriverTest extends MockObjectTestCase {
     public AsyncFrankensteinDriver frankensteinDriver;
     private Mock scriptContextMock;
 
+    protected void startApplicationToTest() {
+        try {
+            ProcessBuilder p = new ProcessBuilder("./spawn.sh");
+            p.directory(new File("/media/extended/frankenstein/"));
+            Process process = p.start();
+        } catch (Exception e) {}
+    }
 
     protected void setUp() throws Exception {
-//        Mock applicationMock = mock(Application.class);
-//        applicationMock.expects(once()).method("launch").with(ANYTHING);
-//        frankensteinDriver = new AsyncFrankensteinDriver((Application) applicationMock.proxy(), new String[]{"abc", "def"}, new NullTestReporter(), null, null, null, testName);
-//        scriptContextMock = mock(ScriptContext.class);
-
-        ProcessBuilder p = new ProcessBuilder("./spawn.sh");
-        p.directory(new File("/media/extended/frankenstein/"));
-        Process process = p.start();
+        startApplicationToTest();
     }
 
     public void testClickButtonPlaysClickEvent() {
-        StringBuilder script = new StringBuilder();
-        Socket socket = null;
-        Boolean connected = false;
-        while(!connected) {
-            try {
-                socket = new Socket("127.0.0.1", 5678);
+        frankensteinDriver = new AsyncFrankensteinDriver("127.0.0.1", 5678);
 
-                connected = true;
-            }
-            catch(Exception e) {
-                System.out.println("Unable to establish connection to frankenstein");
-            }
+        frankensteinDriver.activateWindow("Todo List");
+        frankensteinDriver.finishTest();
 
-            try {
-                Thread.sleep(1000);
-            }
-            catch(Exception e){
-
-            }
-
-        }
-
-
-        //our test script
-        String step = "activate_window \"Todo List\"";
-        String end = "END_OF_SCRIPT";
-        //build the script
-        script.append(step.replaceAll("\n", "&#xA;") + "\n");
-        script.append(end.replaceAll("\n", "&#xA;") + "\n");
-
-        try {
-            BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-            buffer.write(script.toString());
-            buffer.flush();
-        } catch (IOException e) {
-            System.out.println("writing to the buffer failed like a derp!");
-        }
-
-        String hi = "hi";
 //        Mock scriptContextMock = mock(ScriptContext.class);
 
 //        ButtonEvent buttonEvent = createButtonEventAction(buttonName);
