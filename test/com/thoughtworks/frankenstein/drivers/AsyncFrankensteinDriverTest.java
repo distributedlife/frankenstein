@@ -14,15 +14,13 @@ import com.thoughtworks.frankenstein.remote.Script;
  * @author Korny
  */
 public class AsyncFrankensteinDriverTest extends MockObjectTestCase {
-    private String testName = "test";
     public AsyncFrankensteinDriver frankensteinDriver;
-    private Mock scriptContextMock;
 
     protected void startApplicationToTest() {
         try {
             ProcessBuilder p = new ProcessBuilder("./spawn.sh");
             p.directory(new File("/media/extended/frankenstein/"));
-            Process process = p.start();
+            p.start();
         } catch (Exception e) {}
     }
 
