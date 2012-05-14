@@ -1,10 +1,14 @@
 package com.thoughtworks.frankenstein.application;
 
+import com.thoughtworks.frankenstein.common.OsxCompatibilityHack;
+
 /**
  * Launches a designated main class after launching Frankenstein.
  */
 public class PipingMain {
     public static void main(String[] args) throws ClassNotFoundException {
+    	OsxCompatibilityHack.resetAwtLocalisation();
+    	
         createFrankensteinIntegration(args).start(parseArgs(args));
     }
 

@@ -2,12 +2,17 @@ package com.thoughtworks.frankenstein.events;
 
 import java.awt.event.KeyEvent;
 
+import com.thoughtworks.frankenstein.common.OsxCompatibilityHack;
+
 import junit.framework.TestCase;
 
 /**
  * Ensures the functionality of KeyStrokeMap
  */
 public class KeyStrokeMapTest extends TestCase {
+	public void setUp() {
+		OsxCompatibilityHack.resetAwtLocalisation();
+	}
 
     public void testGetKeyCodeFromTextReturnsCorrectKeyCode() {
         assertEquals(KeyEvent.VK_ALT, KeyStrokeMap.getKeyCodeFromText("Alt"));

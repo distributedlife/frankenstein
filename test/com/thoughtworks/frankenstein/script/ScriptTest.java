@@ -1,12 +1,14 @@
 package com.thoughtworks.frankenstein.script;
 
 import java.awt.event.InputEvent;
+import java.awt.event.InputEvent.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.frankenstein.common.Constants;
+import com.thoughtworks.frankenstein.common.OsxCompatibilityHack;
 import com.thoughtworks.frankenstein.events.*;
 import com.thoughtworks.frankenstein.events.actions.ClickAction;
 import com.thoughtworks.frankenstein.events.actions.DoubleClickAction;
@@ -20,6 +22,10 @@ import junit.framework.TestCase;
  * tests.
  */
 public class ScriptTest extends TestCase {
+	public void setUp() {
+		OsxCompatibilityHack.resetAwtLocalisation();
+	}
+	
     private static final String SCRIPT =
             "assert \"table\" , \"enabled:true\"\n" +
                     "cancel_table_edit \"tableName\"\n" +
