@@ -15,6 +15,7 @@ import com.thoughtworks.frankenstein.playback.DefaultComponentFinder;
 import com.thoughtworks.frankenstein.playback.DefaultWindowContext;
 import com.thoughtworks.frankenstein.playback.WindowContext;
 import com.thoughtworks.frankenstein.recorders.ScriptContext;
+import com.thoughtworks.frankenstein.remote.Script;
 import com.thoughtworks.frankenstein.script.HtmlTestReporter;
 import com.thoughtworks.frankenstein.script.TestReporter;
 
@@ -29,90 +30,34 @@ import java.net.*;
  * @author Prakash
  * @author Ryan Boucher
  */
-public class AsyncFrankensteinDriver implements FrankensteinDriver {
-    protected PlaybackFrankensteinIntegration frankensteinIntegration;
-    protected String[] args;
-    static protected final String unsupported = "This constructor is not supported on this driver. Please use (host, port)" ;
+public class AsyncFrankensteinDriver {
+    static protected final String unsupported = "This constructor is not supported on this driver. Please use AsyncFrankensteinDriver(String host, int port)" ;
 
-    public AsyncFrankensteinDriver(Class mainClass, String[] args) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Class mainClass, String[] args, TestReporter testReporter) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Class mainClass, String[] args, TestReporter testReporter, String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(PlaybackFrankensteinIntegration frankensteinIntegration, String[] args) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Class mainClass,
-                                   String[] args,
-                                   TestReporter testReporter,
-                                   WorkerThreadMonitor threadMonitor,
-                                   String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Class mainClass,
-                                   String[] args,
-                                   TestReporter testReporter,
-                                   WorkerThreadMonitor threadMonitor,
-                                   ComponentFinder componentFinder,
-                                   WindowContext windowContext,
-                                   String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Application application, String[] args) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Application application, String[] args, TestReporter testReporter) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Application application,
-                                   String[] args,
-                                   TestReporter testReporter,
-                                   String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Application application,
-                                   String[] args,
-                                   TestReporter testReporter,
-                                   RegexWorkerThreadMonitor threadMonitor,
-                                   String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-    public AsyncFrankensteinDriver(Application application,
-                                   String[] args,
-                                   TestReporter testReporter,
-                                   WorkerThreadMonitor threadMonitor,
-                                   ComponentFinder componentFinder,
-                                   WindowContext windowContext,
-                                   String testName) {
-        throw new UnsupportedOperationException(unsupported);
-    }
-
-
-    protected Boolean connected = false;
     protected Socket socket = null;
     protected Integer maxTries = 30 ;
-    protected StringBuilder script = new StringBuilder();
+    
+    protected String host ;
+    protected int port ;
+    protected boolean failed = true ;
 
-    public AsyncFrankensteinDriver(String host, Integer port) {
-        Integer numTries = 0 ;
+    public AsyncFrankensteinDriver(String host, int port) {
+    	this.host = host;
+    	this.port = port;
+    }
+    
+    public void prepare() {
+        connectToFrankensteinServer();
+        
+        failed = true ;
+    }
 
-        while(!connected) {
+	private void connectToFrankensteinServer() {
+		boolean connected = false;
+		int numTries = 0 ;
+		
+		while(!connected) {
             try {
-                socket = new Socket("127.0.0.1", 5678);
+                socket = new Socket(host, port);
 
                 connected = true;
             }
@@ -123,11 +68,11 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
                 }
             }
 
-            waitBeforeTryingToConnectAgain(1000);
+            waitBeforeTryingAgain(1000);
         }
-    }
+	}
 
-    private void waitBeforeTryingToConnectAgain(long waitInMs) {
+    public void waitBeforeTryingAgain(long waitInMs) {
         try {
             Thread.sleep(waitInMs);
         }
@@ -140,221 +85,24 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
 //        frankensteinIntegration.setScriptContext(scriptContext);
     }
 
-    TestReporter getTestReporter() {
-        return frankensteinIntegration.getTestReporter();
-    }
 
     protected void startTest(String testName) {
-        getTestReporter().startTest(testName);
+//        getTestReporter().startTest(testName);
     }
 
-    public void activateApplet(String appletName) {
+    
 
+    public void run(Script script) {
+    	prepare();
+        
+        sendScriptToFrankensteinServer(script);
+    }
+    
+    public boolean failing() {
+    	return failed;
     }
 
-    public void activateDialog(String dialogTitle) {
-
-    }
-
-    public void activateWindow(String windowTitle) {
-        appendToScript("activate_window \"" + windowTitle + "\"");
-    }
-
-    public void activateInternalFrame(String internalFrameTitle) {
-
-    }
-
-    public void assertValue(String componentName, String ognlExpression, String expectedValue) {
-
-    }
-
-    public void assertNumberOfTableRows(String tableName, int expectedNumberOfRows) {
-
-    }
-
-    public void assertTableCell(String tableName, int row, int column, String expectedCellValue) {
-
-    }
-
-    public void assertTableRow(String tableName, int row, String[] expectedCellValues) {
-
-    }
-
-    public void assertText(String textComponentName, String expectedText) {
-
-    }
-
-    public void assertTrue(String componentName, String ognlExpression) {
-
-    }
-
-    public void assertFalse(String componentName, String ognlExpression) {
-
-    }
-
-    public void assertEnabled(String componentName) {
-
-    }
-
-    public void assertDisabled(String componentName) {
-
-    }
-
-    public void assertToggleButtonSelected(String toggleButtonName) {
-
-    }
-
-    public void assertToggleButtonNotSelected(String toggleButtonName) {
-
-    }
-
-    public void assertCheckBoxSelected(String checkBoxName) {
-
-    }
-
-    public void assertCheckBoxNotSelected(String checkBoxName) {
-
-    }
-
-    public void assertRadioButtonSelected(String radioButtonName) {
-
-    }
-
-    public void assertRadioButtonNotSelected(String radioButtonName) {
-
-    }
-
-    public void assertLabel(String expectedText) {
-
-    }
-
-    public void cancelTableEdit(String tableName) {
-
-    }
-
-    public void clickButton(String buttonName) {
-
-    }
-
-    public void clickCheckbox(String checkBoxName, boolean isChecked) {
-
-    }
-
-    public void clickRadioButton(String radioButtonName) {
-
-    }
-
-    public void clickTableHeader(String tableHeaderName, String tableColumnName) {
-
-    }
-
-    public void closeInternalFrame(String internalFrameTitle) {
-
-    }
-
-    public void closeAllDialogs() {
-
-    }
-
-    public void delay(int milliseconds) {
-
-    }
-
-    public void dialogClosed(String dialogTitle) {
-
-    }
-
-    public void dialogShown(String dialogTitle) {
-
-    }
-
-    public void doubleClickTableRow(String tableName, int rowIndex) {
-
-    }
-
-    public void doubleClickList(String listName, int itemIndex) {
-
-    }
-
-    public void doubleClickTree(String treeName, String[] pathElements) {
-
-    }
-
-    public void enterText(String textFieldname, String text) {
-
-    }
-
-    public void editTableCell(String tableName, int row, int column) {
-
-    }
-
-    public void internalFrameShown(String internalFrameTitle) {
-
-    }
-
-    public void keyStroke(String keyModifierAndKeyCodeText) {
-
-    }
-
-    public void navigate(String pathString) {
-
-    }
-
-    public void rightClickTree(String treeName, String[] pathElements) {
-
-    }
-
-    public void rightClickList(String listName, int itemIndex) {
-
-    }
-
-    public void rightClickTableRow(String tableName, int rowIndex) {
-
-    }
-
-    public void selectDropDown(String comboBoxName, String value) {
-
-    }
-
-    public void selectFile(String filePath) {
-
-    }
-
-    public void selectFiles(String[] filePaths) {
-
-    }
-
-    public void selectList(String listName, String[] listElements) {
-
-    }
-
-    public void selectTableRow(String tableName, int[] rows) {
-
-    }
-
-    public void selectTree(String treeName, String[] pathElements) {
-
-    }
-
-    public void stopTableEdit(String tableName) {
-
-    }
-
-    public void switchTab(String tabPaneTitle, String tabTitle) {
-
-    }
-
-    public void moveSlider(String sliderName, int position) {
-
-    }
-
-    public void finishTest() {
-        appendToScript("END_OF_SCRIPT");
-
-        sendScriptToFrankensteinServer();
-    }
-
-    protected void sendScriptToFrankensteinServer() {
+    protected void sendScriptToFrankensteinServer(Script script) {
         try {
             BufferedWriter buffer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -363,9 +111,39 @@ public class AsyncFrankensteinDriver implements FrankensteinDriver {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        
+        try {
+			BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		
+			
+			char[] c = new char[1];
+			buffer.read(c);
+			
+			
+			if (c[0] == 'P') {
+				failed = false;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+        
     }
 
-    protected void appendToScript(String toAppend) {
-        script.append(toAppend.replaceAll("\n", "&#xA;") + "\n");
-    }
+    
+
+	public void runUntilSuccess(Script script) {
+		int numTries = 0 ;
+		
+		do {	
+        	run(script);
+        	numTries++ ;
+        	if (numTries > maxTries) {
+        		break;
+        	}
+        } while (failing());
+		
+		if (failing()) {
+			throw new RuntimeException("Tried " + maxTries + " times but the script never found what it was looking for; much akin to U2") ;
+		}
+	}
 }
