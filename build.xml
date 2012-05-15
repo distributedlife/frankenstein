@@ -40,6 +40,7 @@
 
     <path id="library.libs.classpath">
         <pathelement location="${basedir}/lib/commons-lang-2.2.jar"/>
+        <pathelement location="${basedir}/lib/commons-io-2.2.jar"/>
         <pathelement location="${basedir}/lib/jmock-1.1.0.jar"/>
         <pathelement location="${basedir}/lib/junit-3.8.1.jar"/>
         <pathelement location="${basedir}/lib/picocontainer-1.2.jar"/>
@@ -113,6 +114,7 @@
     <target name="jar">
         <jar basedir="${compiledclasses.dir}" file="dist/frankenstein.jar"></jar>
         <copy file="lib/commons-lang-2.2.jar" tofile="dist/commons-lang-2.2.jar"/>
+        <copy file="lib/commons-io-2.2.jar" tofile="dist/commons-io-2.2.jar"/>
         <copy file="lib/picocontainer-1.2.jar" tofile="dist/picocontainer-1.2.jar"/>
         <copy file="lib/ognl-2.6.9.jar" tofile="dist/ognl-2.6.9.jar"/>
     </target>
