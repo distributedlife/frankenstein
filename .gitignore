@@ -1,6 +1,7 @@
 frankenstein.log*
 .DS_Store
 .idea
+*.iml
 out
 testName.html
 Frankenstein-git.iml
