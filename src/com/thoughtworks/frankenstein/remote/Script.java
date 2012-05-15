@@ -1,5 +1,7 @@
 package com.thoughtworks.frankenstein.remote;
 
+import com.thoughtworks.frankenstein.common.Constants;
+
 public class Script {
 	protected StringBuilder script = new StringBuilder();
 	
@@ -209,7 +211,7 @@ public class Script {
     
     public String toString() {
     	StringBuilder toTransmit = new StringBuilder(script);
-    	toTransmit.append("END_OF_SCRIPT\n");
+    	toTransmit.append(Constants.END_OF_SCRIPT + "\n");
     	
     	return toTransmit.toString();
     }

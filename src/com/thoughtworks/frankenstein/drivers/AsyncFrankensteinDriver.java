@@ -15,7 +15,6 @@ import java.net.*;
  * @author Ryan Boucher
  */
 public class AsyncFrankensteinDriver {
-    static protected final String unsupported = "This constructor is not supported on this driver. Please use AsyncFrankensteinDriver(String host, int port)";
     public static final int RETRY_INTERVAL_MS = 1000;
 
     protected Socket socket = null;
@@ -114,7 +113,7 @@ public class AsyncFrankensteinDriver {
         do {
             run(script);
             numTries++;
-            if (numTries > MAX_TRIES) {
+            if (numTries >= MAX_TRIES) {
                 break;
             }
         } while (failing());
