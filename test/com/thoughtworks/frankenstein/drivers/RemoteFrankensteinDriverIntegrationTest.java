@@ -14,7 +14,7 @@ import java.io.File;
 public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase {
     public RemoteFrankensteinDriver driver;
     
-   protected void startApplicationToTest() {
+   protected void setUp() {
         try {
             ProcessBuilder p = new ProcessBuilder("./scripts/spawn.sh");
             p.directory(new File(System.getProperty("user.dir")));
@@ -37,8 +37,6 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
     }
 
     public void testIntegration() {
-    	startApplicationToTest();
-    	
     	driver = new RemoteFrankensteinDriver("127.0.0.1", 5678);
         
         Script script = new Script();
