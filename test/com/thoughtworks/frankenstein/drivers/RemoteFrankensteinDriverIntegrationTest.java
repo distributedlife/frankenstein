@@ -13,13 +13,27 @@ import java.io.File;
  */
 public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase {
     public RemoteFrankensteinDriver driver;
-
-    protected void startApplicationToTest() {
+    
+   protected void startApplicationToTest() {
         try {
-            ProcessBuilder p = new ProcessBuilder("./spawn.sh");
-            p.directory(new File("/media/extended/frankenstein/"));
+            ProcessBuilder p = new ProcessBuilder("./scripts/spawn.sh");
+            p.directory(new File(System.getProperty("user.dir")));
             p.start();
-        } catch (Exception e) {}
+        } catch (Exception e) 
+        {
+        	throw new RuntimeException(e);
+        }        
+    }
+    
+    public void tearDown() {
+    	try {
+            ProcessBuilder p = new ProcessBuilder("./scripts/kill.sh");
+            p.directory(new File(System.getProperty("user.dir")));
+            p.start();
+        } catch (Exception e) 
+        {
+        	throw new RuntimeException(e);
+        }      
     }
 
     public void testIntegration() {
@@ -28,10 +42,19 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
     	driver = new RemoteFrankensteinDriver("127.0.0.1", 5678);
         
         Script script = new Script();
-        script.activateWindow("Oh Hai");
+        script.activateWindow("Todo List");
+        script.enterText("description", "one item");
+        script.clickButton("add");
+        script.enterText("description", "two item");
+        script.clickButton("add");
+        script.selectList("todolist", new String[]{"one item"});
+        script.clickButton("delete");
+        script.assertLabel("banana");
+        
+        driver.run(script);
     }
     
-    public void testBRM() {
+    public void BRM() {
     	driver = new RemoteFrankensteinDriver("127.0.0.1", 5678);
     	
     	logInToBrm(driver, "password");
