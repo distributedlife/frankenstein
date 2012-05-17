@@ -114,6 +114,33 @@ public class DefaultWindowContext implements PropertyChangeListener, WindowConte
         }
     }
 
+    public void debugDump() {
+        // NOTE: this is in WindowContext currently as it's dumping the active window.
+        // it could use ComponentFinder.findAllFrames and dump all frames, then it should
+        //  be somewhere else...
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("<html>");
+        msg.append(dumpComponentAsHtml(activeWindow));
+        msg.append("</html>");
+        JOptionPane.showMessageDialog(activeWindow, msg, "Debug Dump", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    public StringBuilder dumpComponentAsHtml(Component component) {
+        StringBuilder msg = new StringBuilder();
+        msg.append("<p><strong>");
+        msg.append(component.getName());
+        msg.append("</strong> : " + component.getClass().getSimpleName() + "</p>");
+        if (component instanceof Container) {
+            msg.append("<ul>");
+            for (Component child : ((Container) component).getComponents()) {
+                dumpComponentAsHtml(child);
+            }
+            msg.append("</ul>");
+        }
+        return msg;
+    }
+
     public void addWindowContextListener(WindowContextListener listener) {
         listenerList.add(WindowContextListener.class, listener);
 

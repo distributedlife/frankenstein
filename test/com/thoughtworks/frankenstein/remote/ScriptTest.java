@@ -228,6 +228,14 @@ public class ScriptTest extends TestCase {
 		assertEquals(s.toString(), eos("close_all_dialogs"));
 	}
 
+	public void testDebugDump() throws Exception {
+		Script s = new Script();
+
+		s.debugDump();
+
+		assertEquals(s.toString(), eos("debug_dump"));
+	}
+
 	public void testDelay() throws Exception {
 		Script s = new Script();
 		

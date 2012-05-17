@@ -209,6 +209,22 @@ public class DefaultWindowContextTest extends MockObjectTestCase {
         windowContext.closeAllDialogs();
     }
 
+    public void testDebugDump() throws InterruptedException {
+        /* TODO: this isn't really a working test yet.
+        JFrame frame = new JFrame("testTopLevelWindow");
+        JDesktopPane pane = new JDesktopPane();
+        JInternalFrame internalFrame = new JInternalFrame("Test");
+        pane.add(internalFrame);
+        frame.setContentPane(pane);
+        windowContext.setActiveWindow(internalFrame);
+        windowContext.debugDump();
+        windowContext.waitForDialogOpening("Debug Dump", 10);
+
+        windowContext.closeAllDialogs();
+        frame.dispose();
+        */
+    }
+
     public void testReturnsCurrentFocusOwner() {
         JLabel focusOwner = new JLabel("test");
         setFocusManager(focusOwner);

@@ -125,6 +125,10 @@ public class Script {
     	appendToScript("close_all_dialogs");
     }
 
+    public void debugDump() {
+        appendToScript("debug_dump");
+    }
+
     public void delay(int milliseconds) {
     	appendToScript("delay \"" + Integer.toString(milliseconds) + "\"") ;
     }

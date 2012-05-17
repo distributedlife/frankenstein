@@ -22,6 +22,8 @@ public interface WindowContext {
 
     void closeAllDialogs();
 
+    void debugDump();
+
     void addWindowContextListener(WindowContextListener listener);
 
     void removeWindowContextListener(WindowContextListener listener);
