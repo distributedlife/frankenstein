@@ -13,27 +13,27 @@ import java.io.File;
  */
 public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase {
 	public RemoteFrankensteinDriver driver;
-    
+
 	protected void setUp() {
         try {
             ProcessBuilder p = new ProcessBuilder("./scripts/spawn.sh");
             p.directory(new File(System.getProperty("user.dir")));
             p.start();
-        } catch (Exception e) 
+        } catch (Exception e)
         {
         	throw new RuntimeException(e);
-        }        
+        }
     }
-    
+
     public void tearDown() {
     	try {
             ProcessBuilder p = new ProcessBuilder("./scripts/kill.sh");
             p.directory(new File(System.getProperty("user.dir")));
             p.start();
-        } catch (Exception e) 
+        } catch (Exception e)
         {
         	throw new RuntimeException(e);
-        }      
+        }
     }
 
     public void testIntegration() {
@@ -47,10 +47,10 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
         script.clickButton("add");
         script.selectList("todolist", new String[]{"one item"});
         script.clickButton("delete");
+//      can't test this yet, no automatic way to close it (closeAlldialogs doesn't work)
+//      script.debugDump();
         script.assertLabel("THIS_LABEL_DOES_NOT_EXIST");
-        
-        
-        
+
         driver.run(script);
         
         

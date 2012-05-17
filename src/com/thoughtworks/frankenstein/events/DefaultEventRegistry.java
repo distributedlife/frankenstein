@@ -40,6 +40,7 @@ public class DefaultEventRegistry implements EventRegistry {
         registerEvent(CloseAllDialogsEvent.class);
         registerEvent(CloseInternalFrameEvent.class);
         registerEvent(DelayEvent.class);
+        registerEvent(DebugDumpEvent.class);
         registerEvent(DialogClosedEvent.class);
         registerEvent(DialogShownEvent.class);
         registerEvent(ListEvent.class);

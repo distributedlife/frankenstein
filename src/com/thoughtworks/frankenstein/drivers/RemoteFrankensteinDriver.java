@@ -13,6 +13,7 @@ import java.net.*;
  */
 public class RemoteFrankensteinDriver {
     public static final int RETRY_INTERVAL_MS = 1000;
+    public static final int SOCKET_TIMEOUT_IN_MS = 60000;
 
     protected Socket socket = null;
     protected static final Integer MAX_TRIES = 30;
@@ -28,7 +29,6 @@ public class RemoteFrankensteinDriver {
 
     public void prepare() {
         socket = connectToFrankensteinServer(RETRY_INTERVAL_MS, MAX_TRIES);
-
         failed = true;
     }
 
@@ -37,7 +37,9 @@ public class RemoteFrankensteinDriver {
 
         while (numTries < maxTries) {
             try {
-                return new Socket(host, port);
+                Socket s = new Socket(host, port);
+                s.setSoTimeout(SOCKET_TIMEOUT_IN_MS);
+                return s;
             } catch (IOException e) {
                 // this is the exception we expect - anything else
                 //  should not be caught
