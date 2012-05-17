@@ -28,8 +28,10 @@ public class AssertLabelEvent extends AbstractFrankensteinEvent {
     public void run() {
         try {
             finder.findLabel(context, labelValue);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             Logger.getLogger("Frankenstein").log(Level.WARNING, "AssertLabel failed: Could not find label with text " + labelValue);
+            
+            throw e;
         }
     }
 }

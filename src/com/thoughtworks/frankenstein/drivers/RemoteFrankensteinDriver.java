@@ -8,13 +8,12 @@ import java.io.*;
 import java.net.*;
 
 /**
- * Default FrankensteinDriver implementation.
+ * FrankensteinDriver implementation that runs scripts remotely.
  *
- * @author Pavan
- * @author Prakash
  * @author Ryan Boucher
+ * @author Korny
  */
-public class AsyncFrankensteinDriver {
+public class RemoteFrankensteinDriver {
     public static final int RETRY_INTERVAL_MS = 1000;
 
     protected Socket socket = null;
@@ -24,7 +23,7 @@ public class AsyncFrankensteinDriver {
     protected int port;
     protected boolean failed = true;
 
-    public AsyncFrankensteinDriver(String host, int port) {
+    public RemoteFrankensteinDriver(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -89,21 +88,18 @@ public class AsyncFrankensteinDriver {
             throw new RuntimeException(e);
         }
 
+        
         try {
             BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 
             char[] c = new char[1];
             buffer.read(c);
-
-
-            if (c[0] == 'P') {
-                failed = false;
-            }
+            
+            failed = (c[0] != 'P');
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 
