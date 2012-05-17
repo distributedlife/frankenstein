@@ -88,21 +88,18 @@ public class RemoteFrankensteinDriver {
             throw new RuntimeException(e);
         }
 
+        
         try {
             BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 
             char[] c = new char[1];
             buffer.read(c);
-
-
-            if (c[0] == 'P') {
-                failed = false;
-            }
+            
+            failed = (c[0] != 'P');
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 

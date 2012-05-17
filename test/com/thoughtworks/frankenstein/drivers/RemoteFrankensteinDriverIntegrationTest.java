@@ -17,7 +17,8 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
    protected void setUp() {
         try {
             ProcessBuilder p = new ProcessBuilder("./scripts/spawn.sh");
-            p.directory(new File(System.getProperty("user.dir")));
+            p.directory(new File("/Users/rboucher/projects/frankenstein/"));
+//            p.directory(new File(System.getProperty("user.dir")));
             p.start();
         } catch (Exception e) 
         {
@@ -28,7 +29,8 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
     public void tearDown() {
     	try {
             ProcessBuilder p = new ProcessBuilder("./scripts/kill.sh");
-            p.directory(new File(System.getProperty("user.dir")));
+            p.directory(new File("/Users/rboucher/projects/frankenstein/"));
+//            p.directory(new File(System.getProperty("user.dir")));
             p.start();
         } catch (Exception e) 
         {
@@ -47,9 +49,14 @@ public class RemoteFrankensteinDriverIntegrationTest extends MockObjectTestCase 
         script.clickButton("add");
         script.selectList("todolist", new String[]{"one item"});
         script.clickButton("delete");
-        script.assertLabel("banana");
+        script.assertLabel("THIS_LABEL_DOES_NOT_EXIST");
+        
+        
         
         driver.run(script);
+        
+        
+        assertTrue(driver.failing());
     }
     
     public void BRM() {
