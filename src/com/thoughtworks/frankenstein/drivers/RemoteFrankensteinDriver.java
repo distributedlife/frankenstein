@@ -1,9 +1,7 @@
 package com.thoughtworks.frankenstein.drivers;
 
-import com.thoughtworks.frankenstein.recorders.ScriptContext;
 import com.thoughtworks.frankenstein.remote.Script;
 
-import java.lang.*;
 import java.io.*;
 import java.net.*;
 
@@ -58,16 +56,6 @@ public class RemoteFrankensteinDriver {
         }
     }
 
-    void setScriptContext(ScriptContext scriptContext) {
-//        frankensteinIntegration.setScriptContext(scriptContext);
-    }
-
-
-    protected void startTest(String testName) {
-//        getTestReporter().startTest(testName);
-    }
-
-
     public void run(Script script) {
         prepare();
 
@@ -111,6 +99,9 @@ public class RemoteFrankensteinDriver {
             numTries++;
             if (numTries >= MAX_TRIES) {
                 break;
+            }
+            if (failing()) {
+            	waitBeforeTryingAgain(RETRY_INTERVAL_MS);
             }
         } while (failing());
 
