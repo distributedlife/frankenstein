@@ -202,6 +202,10 @@ public class Script {
     	appendToScript("select_files " + path);
     }
 
+    public void selectList(String listName, String listItem) {
+    	this.selectList(listName, new String[] {listItem});
+    }
+    
     public void selectList(String listName, String[] listElements) {
     	appendToScript("select_list \"" + listName + "\" , \"" + StringUtils.join(listElements, ",") + "\"");
     }
@@ -237,11 +241,19 @@ public class Script {
     	return toTransmit.toString();
     }
     
+    public String toStringNoEndOfScript() {
+    	return script.toString();
+    }
+    
     protected void appendToScript(String toAppend) {
         script.append(toAppend.replaceAll("\n", "&#xA;") + "\n");
     }
     
     protected String treePath(String[] elements) {
         return "\"" + StringUtils.join(elements, "\",\"") + "\"" ;
+    }
+    
+    public void appendScript(Script toAppend) {
+    	this.script.append(toAppend.toStringNoEndOfScript());
     }
 }
