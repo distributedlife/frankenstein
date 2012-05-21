@@ -121,7 +121,7 @@ public class DefaultWindowContext implements PropertyChangeListener, WindowConte
 
         StringBuilder msg = new StringBuilder();
         msg.append("<html>");
-        msg.append(dumpComponentAsHtml(activeWindow));
+        msg.append(dumpComponentAsHtml(activeTopLevelWindow()));
         msg.append("</html>");
         JOptionPane.showMessageDialog(activeWindow, msg, "Debug Dump", JOptionPane.PLAIN_MESSAGE);
     }
@@ -130,11 +130,11 @@ public class DefaultWindowContext implements PropertyChangeListener, WindowConte
         StringBuilder msg = new StringBuilder();
         msg.append("<p><strong>");
         msg.append(component.getName());
-        msg.append("</strong> : " + component.getClass().getSimpleName() + "</p>");
+        msg.append("</strong> : " + component.getClass().getName() + "</p>");
         if (component instanceof Container) {
             msg.append("<ul>");
             for (Component child : ((Container) component).getComponents()) {
-                dumpComponentAsHtml(child);
+                msg.append(dumpComponentAsHtml(child));
             }
             msg.append("</ul>");
         }
